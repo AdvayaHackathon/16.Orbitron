@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, jsonify
-import tensorflow
-from tensorflow.keras.models import load_model 
-from tensorflow.keras.preprocessing import image 
-from tensorflow.keras.metrics import AUC 
+import tensorflow as tf
+from tensorflow.keras.models import load_model # type: ignore
+from tensorflow.keras.preprocessing import image # type: ignore
+from tensorflow.keras.metrics import AUC # type: ignore
 import numpy as np
 import pickle
 
@@ -23,7 +23,10 @@ verbose_name = {
 
            }
 
-model = load_model('C:/Users/s/Desktop/health/Prediction/skin_cancer/skin.keras')
+
+
+
+model = load_model('I:/Projects/Skin-Cancer-Prediction/SOURCECODE/model/skin.keras')
 
 def predict_label(img_path):
 	test_image = image.load_img(img_path, target_size=(28,28))
@@ -35,7 +38,16 @@ def predict_label(img_path):
 	
 	return verbose_name[classes_x[0]]
 
-@app.route("/")  
+ 
+@app.route("/")
+@app.route("/first")
+def first():
+	return render_template('first.html')
+    
+@app.route("/login")
+def login():
+	return render_template('login.html')   
+    
 @app.route("/index", methods=['GET', 'POST'])
 def index():
 	return render_template("index.html")
@@ -46,7 +58,7 @@ def get_output():
 	if request.method == 'POST':
 		img = request.files['my_image']
 
-		img_path = "C:/Users/s/Desktop/health/Prediction/skin_cancer/tests" + img.filename	
+		img_path = "I:/Projects/Skin-Cancer-Prediction/SOURCECODE/static/tests" + img.filename	
 		img.save(img_path)
 
 		predict_result = predict_label(img_path)
@@ -54,11 +66,11 @@ def get_output():
 	return render_template("prediction.html", prediction = predict_result, img_path = img_path)
 
 # Load the trained model
-model = pickle.load(open("C:/Users/s/Desktop/health/Prediction/diabetes/model.pkl", "rb"))
+model = pickle.load(open("../diabetes/model.pkl", "rb"))
 
 @app.route('/')
 def home():
-    return render_template("diabetes.html")
+    return render_template("index.html")
 
 @app.route('/predict', methods=["POST"])
 def predict():
